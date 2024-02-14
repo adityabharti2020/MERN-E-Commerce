@@ -6,6 +6,9 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import logo from "../../Assets/logo.png";
+import { Link } from "react-router-dom";
+import { selectItems } from "../cart/cartApiSlice";
+import { useSelector } from "react-redux";
 const user = {
   name: "Tom Cook",
   email: "tom@example.com",
@@ -22,13 +25,15 @@ const navigation = [
 const userNavigation = [
   { name: "Your Profile", href: "#" },
   { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
+  { name: "Sign out", link: "/login" },
 ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 const Navbar = ({ children }) => {
+  const items = useSelector(selectItems);
+
   return (
     <>
       <div className="min-h-full">
@@ -39,12 +44,14 @@ const Navbar = ({ children }) => {
                 <div className="flex h-16 items-center justify-between">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                      <img
-                        className="h-8 w-8"
-                        src={logo}
-                        alt="E-Commerce"
-                        style={{ width: "62px", height: "62px" }}
-                      />
+                      <Link to="/">
+                        <img
+                          className="h-8 w-8"
+                          src={logo}
+                          alt="E-Commerce"
+                          style={{ width: "62px", height: "62px" }}
+                        />
+                      </Link>
                     </div>
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
@@ -68,20 +75,23 @@ const Navbar = ({ children }) => {
                   </div>
                   <div className="hidden md:block">
                     <div className="ml-4 flex items-center md:ml-6">
-                      <button
-                        type="button"
-                        className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                      >
-                        <span className="absolute -inset-1.5" />
-                        {/* <span className="sr-only">View notifications</span> */}
-                        <ShoppingCartIcon
-                          className="h-6 w-6"
-                          aria-hidden="true"
-                        />
-                      </button>
-                      <span class="inline-flex items-center rounded-md mb-7 -ml-2 bg-red-50 px-2 py-1 text-xs  font-medium text-red-700 ring-1 ring-inset ring-red-600/10 ">
-                        3
-                      </span>
+                      <Link to="/cart">
+                        <button
+                          type="button"
+                          className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                        >
+                          <span className="absolute -inset-1.5" />
+                          {/* <span className="sr-only">View notifications</span> */}
+                          <ShoppingCartIcon
+                            className="h-6 w-6"
+                            aria-hidden="true"
+                          />
+                        </button>
+                      </Link>
+
+                     {items?.items.length > 0 && <span class="inline-flex items-center rounded-md mb-7 -ml-2 bg-red-50 px-2 py-1 text-xs  font-medium text-red-700 ring-1 ring-inset ring-red-600/10 ">
+                        {items?.items.length}
+                      </span>}
 
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
@@ -183,20 +193,25 @@ const Navbar = ({ children }) => {
                         {user.email}
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                    >
-                      <span className="absolute -inset-1.5" />
-                      {/* <span className="sr-only">View notifications</span> */}
-                      <ShoppingCartIcon
-                        className="h-6 w-6"
-                        aria-hidden="true"
-                      />
-                    </button>
-                    <span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10 mb-7">
-                      3
-                    </span>
+                    <Link to="/cart">
+                      <button
+                        type="button"
+                        className="ml-12 flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                      >
+                        <span className="absolute -inset-1.5" />
+                        {/* <span className="sr-only">View notifications</span> */}
+                        <ShoppingCartIcon
+                          className="h-6 w-6"
+                          aria-hidden="true"
+                        />
+                      </button>
+                    </Link>
+
+                    {items?.items.length > 0 && (
+                      <span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10 mb-7">
+                        {items?.items.length}
+                      </span>
+                    )}
                   </div>
                   <div className="mt-3 space-y-1 px-2">
                     {userNavigation.map((item) => (

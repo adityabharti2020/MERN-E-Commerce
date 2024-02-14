@@ -3,6 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { selectItems } from "./cartApiSlice";
 // import { increment, incrementAsync, selectCount } from "./counterSlice";
 
 const products = [
@@ -33,7 +34,8 @@ const products = [
   // More products...
 ];
 export default function Cart() {
-  // const count = useSelector(selectCount);
+  const items = useSelector(selectItems);
+  console.log("cart items", items);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(true);
   return (
@@ -117,7 +119,7 @@ export default function Cart() {
           <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
             <p>
               or{" "}
-              <Link to='/'>
+              <Link to="/">
                 <button
                   type="button"
                   className="font-medium text-indigo-600 hover:text-indigo-500"

@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
-// import { increment, incrementAsync, selectCount } from "./counterSlice";
+import {
+  selectLoggedInUser,
+  createUserAsync,
+  fetchAllUserAsync,
+} from "../authSlice";
 import logo from "../../../Assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 export default function Signup() {
   // const count = useSelector(selectCount);/
   const {
@@ -13,9 +17,16 @@ export default function Signup() {
     formState: { errors },
   } = useForm();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector(selectLoggedInUser);
   console.log("errors", errors);
+  useEffect(() => {
+    dispatch(fetchAllUserAsync());
+  }, [dispatch]);
   return (
     <div>
+      {user && navigate("/")}
+
       <div>
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -34,7 +45,15 @@ export default function Signup() {
               noValidate
               className="space-y-6"
               onSubmit={handleSubmit((data) => {
+                dispatch(
+                  createUserAsync({
+                    email: data.email,
+                    password: data.password,
+                  })
+                );
                 console.log("sign updata", data);
+
+                navigate("/");
               })}
             >
               <div>
@@ -47,7 +66,13 @@ export default function Signup() {
                 <div className="mt-2">
                   <input
                     id="email"
-                    {...register("email", { required: "username is required" })}
+                    {...register("email", {
+                      required: "username is required",
+                      pattern: {
+                        value: /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi,
+                        message: "email is not valid",
+                      },
+                    })}
                     type="email"
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -71,6 +96,11 @@ export default function Signup() {
                     id="password"
                     {...register("password", {
                       required: "Password is required Please create a password",
+                      pattern: {
+                        value:
+                          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
+                        message: `-Password have at least 8 characters with 1 uppercase letter, 1 lowercase letter, and 1 number.It should also contain special characters`,
+                      },
                     })}
                     type="password"
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -96,6 +126,9 @@ export default function Signup() {
                     id="confirmPassword"
                     {...register("confirmPassword", {
                       required: "does not matches the password",
+                      validate: (value, formValues) =>
+                        value === formValues.password ||
+                        "password is not matching",
                     })}
                     type="password"
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
