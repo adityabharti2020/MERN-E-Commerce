@@ -7,7 +7,7 @@ import {
   selectProductById,
 } from "../productListSlice";
 import { fetchProductById } from "../productAPI";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { addToCartAsync } from "../../cart/cartApiSlice";
 import { selectLoggedInUser } from "../../Auth/authSlice";
 
@@ -82,6 +82,8 @@ const ProductDetail = () => {
   const dispatch = useDispatch();
   const product = useSelector(selectProductById);
   const params = useParams();
+  // console.log("Latest product", product);
+  // console.log("product id", params.id);
   useEffect(() => {
     // console.log("current id", params.id);
     dispatch(fetchAllProductByIdAsync(params.id));
@@ -89,12 +91,8 @@ const ProductDetail = () => {
 
   const handleCart = (e) => {
     e.preventDefault();
-    console.log("in handlecart");
-  console.log("user",user)
-
-    dispatch(addToCartAsync({ ...product, quantity: 1, user: user.id }));
+    dispatch(addToCartAsync({ ...product[0], quantity: 1, user: user.id }));
   };
-  console.log("product",product && product[0]?.images[0]);
 
   return (
     <div className="bg-white">
@@ -178,7 +176,7 @@ const ProductDetail = () => {
           <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
             <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
               <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                {product.title}
+                {product[0].title}
               </h1>
             </div>
 
@@ -186,7 +184,7 @@ const ProductDetail = () => {
             <div className="mt-4 lg:row-span-3 lg:mt-0">
               <h2 className="sr-only">Product information</h2>
               <p className="text-3xl tracking-tight text-gray-900">
-                {product.price}
+               $ {product[0].price}
               </p>
 
               {/* Reviews */}
@@ -198,7 +196,7 @@ const ProductDetail = () => {
                       <StarIcon
                         key={rating}
                         className={classNames(
-                          product.rating > rating
+                          product[0].rating > rating
                             ? "text-gray-900"
                             : "text-gray-200",
                           "h-5 w-5 flex-shrink-0"
@@ -207,7 +205,7 @@ const ProductDetail = () => {
                       />
                     ))}
                   </div>
-                  <p className="sr-only">{product.rating} out of 5 stars</p>
+                  <p className="sr-only">{product[0].rating} out of 5 stars</p>
                 </div>
               </div>
 
@@ -334,14 +332,20 @@ const ProductDetail = () => {
                     </div>
                   </RadioGroup>
                 </div>
-
-                <button
-                  type="submit"
-                  onClick={handleCart}
-                  className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                  Add to cart
-                </button>
+                <div className="flex justify-between w-full">
+                  <button
+                    type="submit"
+                    onClick={handleCart}
+                    className="mt-10 flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  >
+                    Add to cart
+                  </button>
+                  <Link to="/cart">
+                    <div className="mt-10 flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                      Goto cart
+                    </div>
+                  </Link>
+                </div>
               </form>
             </div>
 

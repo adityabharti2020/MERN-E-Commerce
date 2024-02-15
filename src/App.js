@@ -17,6 +17,7 @@ import Protected from "./features/Auth/Component/Protected";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLoggedInUser } from "./features/Auth/authSlice";
 import { fetchItemsByUserIdAsync } from "./features/cart/cartApiSlice";
+import PageNotFound from "./pages/404";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -58,6 +59,10 @@ const router = createBrowserRouter([
       </Protected>
     ),
   },
+  {
+    path: "*",
+    element: <PageNotFound />,
+  },
 ]);
 
 function App() {
@@ -67,7 +72,7 @@ function App() {
     if (user) {
       dispatch(fetchItemsByUserIdAsync(user.id));
     }
-  }, [dispatch,user]);
+  }, [dispatch, user]);
   return (
     <div className="App">
       <RouterProvider router={router} />

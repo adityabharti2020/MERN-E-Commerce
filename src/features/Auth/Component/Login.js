@@ -15,7 +15,6 @@ export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector(selectLoggedInUser);
-  console.log("user",user)
   const error = useSelector(selectError);
   return (
     <div>
@@ -44,9 +43,6 @@ export default function Login() {
                     password: data.password,
                   })
                 );
-                // console.log("sign updata", data);
-
-                // navigate("/");
               })}
             >
               <div>
